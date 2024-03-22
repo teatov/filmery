@@ -2,6 +2,6 @@
 	import '../app.css';
 </script>
 
-<main class="container max-w-md mx-auto">
+<main class="container max-w-screen-md mx-auto">
 	<slot />
 </main>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import MovieCard from '$lib/components/MovieCard.svelte';
+
   export let data;
   $: movies = data.movies;
 </script>
@@ -7,13 +9,10 @@
   <title>Home</title>
 </svelte:head>
 
-<table>
+<ul>
   {#each movies as movie}
-    <tr>
-      <th>
-        {movie.id}
-      </th>
-      <th>{movie.title}</th>
-    </tr>
+    <li>
+      <MovieCard {movie} genre={movie.genre} />
+    </li>
   {/each}
-</table>
+</ul>
