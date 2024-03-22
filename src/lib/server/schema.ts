@@ -18,12 +18,6 @@ export const movieTable = sqliteTable('movie', {
 });
 
 export type Movie = typeof movieTable.$inferSelect;
-export type FullMovie = typeof movieTable.$inferSelect & {
-  genre: Genre | null;
-  country: Country | null;
-  staff: FullMovieStaff[] | null;
-  companies: FullMovieCompany[] | null;
-};
 export type NewMovie = typeof movieTable.$inferInsert;
 
 export const movieRelations = relations(movieTable, ({ many, one }) => ({
@@ -79,10 +73,6 @@ export const movieStaffTable = sqliteTable('movieStaff', {
 });
 
 export type MovieStaff = typeof movieStaffTable.$inferSelect;
-export type FullMovieStaff = typeof movieStaffTable.$inferSelect & {
-  movie: Movie;
-  staff: Staff;
-};
 export type NewMovieStaff = typeof movieStaffTable.$inferInsert;
 
 export const movieStaffRelations = relations(movieStaffTable, ({ one }) => ({
@@ -127,10 +117,6 @@ export const movieCompanyTable = sqliteTable('movieCompany', {
 });
 
 export type MovieCompany = typeof movieCompanyTable.$inferSelect;
-export type FullMovieCompany = typeof movieCompanyTable.$inferSelect & {
-  movie: Movie;
-  company: Company;
-};
 export type NewMovieCompany = typeof movieCompanyTable.$inferInsert;
 
 export const movieCompanyRelations = relations(

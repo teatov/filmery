@@ -6,13 +6,17 @@
 </script>
 
 <svelte:head>
-  <title>Home</title>
+  <title>Movies</title>
 </svelte:head>
 
-<ul>
-  {#each movies as movie}
-    <li>
-      <MovieCard {movie} genre={movie.genre} />
-    </li>
-  {/each}
-</ul>
+{#if movies.length > 0}
+  <ul>
+    {#each movies as movie}
+      <li>
+        <MovieCard {movie} />
+      </li>
+    {/each}
+  </ul>
+{:else}
+  <p>No movies found</p>
+{/if}

@@ -1,8 +1,12 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card';
-  import type { FullMovie } from '$lib/server/schema';
+  import { Button } from '$lib/components/ui/button';
+  import type { Movie, Genre, MovieStaff, Staff } from '$lib/server/schema';
 
-  export let movie: FullMovie;
+  export let movie: Movie & {
+    genre: Genre | null;
+    staff: (MovieStaff & { staff: Staff | null })[] | null;
+  };
   const releaseDate = new Date(movie.releaseDate);
 </script>
 
@@ -10,9 +14,13 @@
   <img src={movie.poster} alt={movie.title} class="max-h-64" />
   <div>
     <Card.Header>
-      <Card.Title>{movie.title}</Card.Title>
+      <Card.Title
+        ><Button href="/{movie.id}" variant="link" class="text-lg p-0"
+          >{movie.title}</Button
+        ></Card.Title
+      >
       <Card.Description
-        >{releaseDate.getFullYear()} {movie?.genre?.name}</Card.Description
+        >{releaseDate.getFullYear()} - {movie?.genre?.name}</Card.Description
       >
     </Card.Header>
     <Card.Content>
@@ -22,7 +30,7 @@
       <Card.Footer>
         <ul class="flex flex-wrap gap-4">
           {#each movie.staff as staffMember}
-            <li>{staffMember.credit}: {staffMember.staff.name}</li>
+            <li><span class="text-muted-foreground">{staffMember.credit}:</span> {staffMember.staff?.name}</li>
           {/each}
         </ul>
       </Card.Footer>
