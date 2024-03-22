@@ -10,7 +10,7 @@
 </svelte:head>
 
 {#if movies.length > 0}
-  <ul>
+  <ul class="space-y-4">
     {#each movies as movie}
       <li>
         <MovieCard {movie} />
