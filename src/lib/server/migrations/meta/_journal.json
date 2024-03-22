@@ -8,6 +8,13 @@
       "when": 1711087872309,
       "tag": "0000_clear_champions",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1711118527623,
+      "tag": "0001_busy_lockjaw",
+      "breakpoints": true
     }
   ]
 }

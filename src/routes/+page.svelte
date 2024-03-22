@@ -1,18 +1,19 @@
 <script lang="ts">
   export let data;
-  $: allUsers = data.allUsers;
+  $: movies = data.movies;
 </script>
 
+<svelte:head>
+  <title>Home</title>
+</svelte:head>
+
 <table>
-  {#each allUsers as user}
+  {#each movies as movie}
     <tr>
       <th>
-        {user.id}
+        {movie.id}
       </th>
-      <th>{user.firstName}</th>
-      <th>{user.lastName}</th>
-      <th>{user.age}</th>
-      <th>{user.createdAt}</th>
+      <th>{movie.title}</th>
     </tr>
   {/each}
 </table>

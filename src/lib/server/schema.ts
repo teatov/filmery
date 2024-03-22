@@ -1,13 +1,133 @@
-import { sql } from 'drizzle-orm';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
+import {
+  integer,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core';
 
-export const users = sqliteTable('users', {
+export const movieTable = sqliteTable('movie', {
   id: integer('id').primaryKey(),
-  firstName: text('first_name'),
-  lastName: text('last_name'),
-  age: integer('age'),
-  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  title: text('title').notNull(),
+  releaseDate: integer('releaseDate').notNull(),
+  duration: integer('duration').notNull(),
+  synopsis: text('synopsis').notNull(),
+  countryId: integer('countryId').references(() => countryTable.id),
+  genreId: integer('genreId').references(() => genreTable.id),
 });
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
+export type Movie = typeof movieTable.$inferSelect;
+export type NewMovie = typeof movieTable.$inferInsert;
+
+export const movieRelations = relations(movieTable, ({ many, one }) => ({
+  country: one(countryTable, {
+    fields: [movieTable.countryId],
+    references: [countryTable.id],
+  }),
+  genre: one(genreTable, {
+    fields: [movieTable.genreId],
+    references: [genreTable.id],
+  }),
+  staff: many(movieStaffTable),
+  companies: many(movieCompanyTable),
+}));
+
+export const genreTable = sqliteTable(
+  'genre',
+  {
+    id: integer('id').primaryKey(),
+    name: text('name').notNull(),
+  },
+  genre => {
+    return {
+      nameIndex: uniqueIndex('name_idx').on(genre.name),
+    };
+  }
+);
+
+export type Genre = typeof genreTable.$inferSelect;
+export type NewGenre = typeof genreTable.$inferInsert;
+
+export const genreRelations = relations(genreTable, ({ many }) => ({
+  movies: many(movieTable),
+}));
+
+export const staffTable = sqliteTable('staff', {
+  id: integer('id').primaryKey(),
+  name: text('name').notNull(),
+});
+
+export type Staff = typeof staffTable.$inferSelect;
+export type NewStaff = typeof staffTable.$inferInsert;
+
+export const staffRelations = relations(staffTable, ({ many }) => ({
+  movies: many(movieStaffTable),
+}));
+
+export const movieStaffTable = sqliteTable('movieStaff', {
+  id: integer('id').primaryKey(),
+  credit: text('credit').notNull(),
+  movieId: integer('movieId').references(() => movieTable.id),
+  staffId: integer('staffId').references(() => staffTable.id),
+});
+
+export type MovieStaff = typeof movieStaffTable.$inferSelect;
+export type NewMovieStaff = typeof movieStaffTable.$inferInsert;
+
+export const movieStaffRelations = relations(movieStaffTable, ({ one }) => ({
+  movie: one(movieTable, {
+    fields: [movieStaffTable.movieId],
+    references: [movieTable.id],
+  }),
+  staff: one(staffTable, {
+    fields: [movieStaffTable.staffId],
+    references: [staffTable.id],
+  }),
+}));
+
+export const countryTable = sqliteTable('country', {
+  id: integer('id').primaryKey(),
+  name: text('name').notNull(),
+});
+
+export type Country = typeof countryTable.$inferSelect;
+export type NewCountry = typeof countryTable.$inferInsert;
+
+export const countryRelations = relations(countryTable, ({ many }) => ({
+  movies: many(movieTable),
+}));
+
+export const companyTable = sqliteTable('company', {
+  id: integer('id').primaryKey(),
+  name: text('name').notNull(),
+});
+
+export type Company = typeof companyTable.$inferSelect;
+export type NewCompany = typeof companyTable.$inferInsert;
+
+export const companyRelations = relations(companyTable, ({ many }) => ({
+  movies: many(movieCompanyTable),
+}));
+
+export const movieCompanyTable = sqliteTable('movieCompany', {
+  id: integer('id').primaryKey(),
+  movieId: integer('movieId').references(() => movieTable.id),
+  companyId: integer('companyId').references(() => companyTable.id),
+});
+
+export type MovieCompany = typeof movieCompanyTable.$inferSelect;
+export type NewMovieCompany = typeof movieCompanyTable.$inferInsert;
+
+export const movieCompanyRelations = relations(
+  movieCompanyTable,
+  ({ one }) => ({
+    movie: one(movieTable, {
+      fields: [movieCompanyTable.movieId],
+      references: [movieTable.id],
+    }),
+    company: one(companyTable, {
+      fields: [movieCompanyTable.companyId],
+      references: [companyTable.id],
+    }),
+  })
+);
