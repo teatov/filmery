@@ -28,9 +28,12 @@
     </Card.Content>
     {#if movie.staff}
       <Card.Footer>
-        <ul class="flex flex-wrap gap-4">
-          {#each movie.staff as staffMember}
-            <li><span class="text-muted-foreground">{staffMember.credit}:</span> {staffMember.staff?.name}</li>
+        <ul class="flex flex-wrap gap-x-4">
+          {#each movie.staff.slice(0, 3) as staffMember}
+            <li>
+              <span class="text-muted-foreground">{staffMember.credit}:</span>
+              {staffMember.staff?.name}
+            </li>
           {/each}
         </ul>
       </Card.Footer>
