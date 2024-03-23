@@ -2,10 +2,21 @@ import * as cheerio from 'cheerio';
 import type {
   NewCompany,
   NewCountry,
+  NewGenre,
   NewMovie,
   NewMovieStaff,
   NewStaff,
 } from '$lib/server/schema';
+
+type FullStaff = NewMovieStaff & { staff: NewStaff[] };
+
+export type FullMovie = {
+  movie: NewMovie;
+  country: NewCountry;
+  genre: NewGenre;
+  staff: FullStaff[];
+  companies: NewCompany[];
+};
 
 const scrape = async (url: string) => {
   const response = await fetch(url);
@@ -14,7 +25,7 @@ const scrape = async (url: string) => {
   return cheerio.load(body);
 };
 
-export const parseAfi = async (url: string) => {
+export const parseAfi = async (url: string): Promise<FullMovie> => {
   const $ = await scrape(url);
 
   const title = $('#search_header .searchtitle').text().trim();
@@ -43,7 +54,7 @@ export const parseAfi = async (url: string) => {
     .text()
     .trim();
 
-  const staff: (NewMovieStaff & { staff: NewStaff[] })[] = [];
+  const staff: FullStaff[] = [];
   $('.blockMovies .search-container .movieResult .resultContainer').each(
     function () {
       const movieStaff = {
