@@ -4,6 +4,7 @@
   import { Label } from '$lib/components/ui/label';
   import * as Select from '$lib/components/ui/select';
   import type { Company, Country, Genre, Staff } from '$lib/server/schema';
+  import { text } from '@sveltejs/kit';
 
   export let countries: Country[];
   export let genres: Genre[];
@@ -11,6 +12,7 @@
   export let companies: Company[];
   export let query: {
     nameIncludes: string | undefined;
+    releaseYear: string | undefined;
     countryId: string | null;
     genreId: string | null;
     staffId: string | null;
@@ -38,18 +40,40 @@
       items: companies,
     },
   ];
+
+  const inputs: {
+    name: string;
+    label: string;
+    value: string | undefined;
+    type: string;
+  }[] = [
+    {
+      name: 'nameIncludes',
+      label: 'Name includes',
+      value: query.nameIncludes,
+      type: 'text',
+    },
+    {
+      name: 'releaseYear',
+      label: 'Release year',
+      value: query.releaseYear,
+      type: 'number',
+    },
+  ];
 </script>
 
 <form action="/" method="GET" class="space-y-4 w-full">
-  <div class="space-y-1.5">
-    <Label for="nameIncludes">Name includes</Label>
-    <Input
-      type="text"
-      id="nameIncludes"
-      name="nameIncludes"
-      value={query.nameIncludes ?? ''}
-    />
-  </div>
+  {#each inputs as input}
+    <div class="space-y-1.5">
+      <Label for={input.name}>{input.label}</Label>
+      <Input
+        type={input.type}
+        id={input.name}
+        name={input.name}
+        value={input.value}
+      />
+    </div>
+  {/each}
   {#each categories as category}
     <div class="space-y-1.5">
       <Label for={category.name}>{category.label}</Label>

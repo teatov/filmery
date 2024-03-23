@@ -23,11 +23,17 @@
     <ul class="grid grid-cols-2 gap-4">
       <li>
         <span class="text-muted-foreground">Release date:</span>
-        {new Date(movie.releaseDate).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
+        <Button
+          href={`/?releaseYear=${new Date(movie.releaseDate).getFullYear()}`}
+          variant="link"
+          class="p-0 text-md h-auto"
+        >
+          {new Date(movie.releaseDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </Button>
       </li>
       <li>
         <span class="text-muted-foreground">Genre:</span>

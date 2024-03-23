@@ -12,6 +12,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
   const nameIncludes = url.searchParams.get('nameIncludes')?.trim();
+  const releaseYear = url.searchParams.get('releaseYear')?.trim();
   const countryId = url.searchParams.get('countryId');
   const genreId = url.searchParams.get('genreId');
   const staffId = url.searchParams.get('staffId');
@@ -19,12 +20,13 @@ export const load: PageServerLoad = async ({ url }) => {
 
   const movies = await db.query.movieTable.findMany({
     with: { genre: true, staff: { with: { staff: true } } },
-    where: (movie, { eq, and, inArray, sql }) =>
+    where: (movie, { eq, and, inArray, like, sql }) =>
       and(
         ...[
           nameIncludes
             ? sql`lower(${movie.title}) like ${`%${nameIncludes.toLowerCase()}%`}`
             : undefined,
+          releaseYear ? like(movie.releaseDate, `${releaseYear}-%`) : undefined,
           countryId ? eq(movie.countryId, Number(countryId)) : undefined,
           genreId ? eq(movie.genreId, Number(genreId)) : undefined,
           staffId
@@ -66,6 +68,6 @@ export const load: PageServerLoad = async ({ url }) => {
     genres,
     staff,
     companies,
-    query: { nameIncludes, countryId, genreId, staffId, companyId },
+    query: { nameIncludes, releaseYear, countryId, genreId, staffId, companyId },
   };
 };
