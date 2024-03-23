@@ -8,7 +8,7 @@ import type {
   NewStaff,
 } from '$lib/server/schema';
 
-type FullStaff = NewMovieStaff & { staff: NewStaff[] };
+type FullStaff = NewMovieStaff & { staff: NewStaff };
 
 export type FullMovie = {
   movie: NewMovie;
@@ -40,38 +40,59 @@ export const parseAfi = async (url: string): Promise<FullMovie> => {
     .next()
     .text()
     .trim();
-  const duration = Number(durationText);
+  const duration = Number(durationText.split('-')[0]);
 
-  const synopsis = $('#fullhistory2').text().slice(0, 200).trim();
+  const synopsis = $('#fullhistory2').text().trim().slice(0, 200);
 
   const countryName = $('#fullCredits .row div:contains("Country:")')
     .next()
     .text()
     .trim();
 
-  const genreName = $('#genreContainer .row div:contains("Genre:")')
-    .next()
-    .text()
-    .trim();
+  const genreName =
+    $('#genreContainer .row div:contains("Genre:")').next().text().trim() ||
+    $('#genreContainer .row div:contains("Genres:")')
+      .next()
+      .find('a')
+      .first()
+      .text()
+      .trim();
 
   const staff: FullStaff[] = [];
   $('.blockMovies .search-container .movieResult .resultContainer').each(
     function () {
       const movieStaff = {
         credit: $(this).find('.resultHed').text().trim().slice(0, -1),
-        staff: [] as NewStaff[],
       };
+
+      if (movieStaff.credit === 'Production Companies') return;
+
+      if (movieStaff.credit.endsWith('s')) {
+        movieStaff.credit = movieStaff.credit.slice(0, -1);
+      }
+
       $(this)
         .find('a')
         .each(function () {
-          movieStaff.staff.push({ name: $(this).text().trim() });
+          const name = $(this).text().trim();
+          if (name === '[ More ]') return;
+          staff.push({ ...movieStaff, staff: { name } });
         });
-      staff.push(movieStaff);
     }
   );
 
   const companies: NewCompany[] = [];
   $('#fullCredits .row div:contains("DISTRIBUTION COMPANY")')
+    .parent()
+    .next('.row')
+    .find('a')
+    .each(function () {
+      const company = {
+        name: $(this).text().trim(),
+      };
+      companies.push(company);
+    });
+  $('#fullCredits .row div:contains("PRODUCTION COMPANIES")')
     .parent()
     .next('.row')
     .find('a')

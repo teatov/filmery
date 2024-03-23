@@ -11,10 +11,12 @@
 </svelte:head>
 
 <section class="flex gap-4 mb-4">
-  <div>
-    <img src={movie.poster} alt={movie.title} class="max-w-64 max-h-96" />
-  </div>
-  <div class="space-y-4">
+  {#if movie.poster}
+    <div>
+      <img src={movie.poster} alt={movie.title} class="max-w-64 max-h-96" />
+    </div>
+  {/if}
+  <div class="space-y-4 grow">
     <h1 class="text-4xl font-bold">{movie.title}</h1>
     <p>{movie.synopsis}</p>
     <Separator />
@@ -76,7 +78,7 @@
 
 <Separator />
 <section class="space-y-4 my-4">
-  <h2 class="text-2xl font-bold">Production companies</h2>
+  <h2 class="text-2xl font-bold">Companies</h2>
   <ul class="grid grid-cols-2 gap-4">
     {#each movie.companies as movieCompany}
       <li>

@@ -43,6 +43,6 @@
   </nav>
 </header>
 
-<main class="container max-w-screen-md mx-auto">
+<main class="container max-w-screen-lg mx-auto">
   <slot />
 </main>

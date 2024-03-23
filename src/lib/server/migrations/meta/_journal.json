@@ -29,6 +29,20 @@
       "when": 1711172657742,
       "tag": "0003_pale_gargoyle",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1711198233143,
+      "tag": "0004_flimsy_sersi",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1711201169726,
+      "tag": "0005_rapid_excalibur",
+      "breakpoints": true
     }
   ]
 }

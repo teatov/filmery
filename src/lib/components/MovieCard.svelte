@@ -11,7 +11,9 @@
 </script>
 
 <Card.Root class="flex overflow-hidden">
-  <img src={movie.poster} alt={movie.title} class="max-h-64" />
+  {#if movie.poster}
+    <img src={movie.poster} alt={movie.title} class="max-h-64" />
+  {/if}
   <div>
     <Card.Header>
       <Card.Title
