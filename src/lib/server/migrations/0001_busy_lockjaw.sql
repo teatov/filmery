@@ -33,7 +33,7 @@ CREATE TABLE `movieStaff` (
 CREATE TABLE `movie` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
-	`releaseDate` integer NOT NULL,
+	`releaseDate` text NOT NULL,
 	`duration` integer NOT NULL,
 	`synopsis` text NOT NULL,
 	`countryId` integer,

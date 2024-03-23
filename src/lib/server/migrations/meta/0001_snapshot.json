@@ -221,7 +221,7 @@
         },
         "releaseDate": {
           "name": "releaseDate",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

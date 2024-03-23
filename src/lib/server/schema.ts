@@ -10,7 +10,7 @@ export const movieTable = sqliteTable('movie', {
   id: integer('id').primaryKey(),
   title: text('title').notNull(),
   poster: text('poster'),
-  releaseDate: integer('releaseDate').notNull(),
+  releaseDate: text('releaseDate').notNull(),
   duration: integer('duration').notNull(),
   synopsis: text('synopsis').notNull(),
   countryId: integer('countryId').references(() => countryTable.id),
