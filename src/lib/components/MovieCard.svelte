@@ -7,7 +7,6 @@
     genre: Genre | null;
     staff: (MovieStaff & { staff: Staff | null })[] | null;
   };
-  const releaseDate = new Date(movie.releaseDate);
 </script>
 
 <Card.Root class="flex overflow-hidden">
@@ -22,7 +21,8 @@
         ></Card.Title
       >
       <Card.Description
-        >{releaseDate.getFullYear()} - {movie?.genre?.name}</Card.Description
+        >{new Date(movie.releaseDate).getFullYear()} - {movie?.genre
+          ?.name}</Card.Description
       >
     </Card.Header>
     <Card.Content>

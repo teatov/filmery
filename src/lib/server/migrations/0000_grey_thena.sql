@@ -33,6 +33,7 @@ CREATE TABLE `movieStaff` (
 CREATE TABLE `movie` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
+	`poster` text,
 	`releaseDate` text NOT NULL,
 	`duration` integer NOT NULL,
 	`synopsis` text NOT NULL,
@@ -47,5 +48,10 @@ CREATE TABLE `staff` (
 	`name` text NOT NULL
 );
 --> statement-breakpoint
-DROP TABLE `users`;--> statement-breakpoint
-CREATE UNIQUE INDEX `name_idx` ON `genre` (`name`);
+CREATE UNIQUE INDEX `company_name_unique` ON `company` (`name`);--> statement-breakpoint
+CREATE UNIQUE INDEX `country_name_unique` ON `country` (`name`);--> statement-breakpoint
+CREATE UNIQUE INDEX `genre_name_unique` ON `genre` (`name`);--> statement-breakpoint
+CREATE UNIQUE INDEX `movieCompany_unique_movie_company` ON `movieCompany` (`movieId`,`companyId`);--> statement-breakpoint
+CREATE UNIQUE INDEX `movieStaff_unique_credit_movie_staff` ON `movieStaff` (`credit`,`movieId`,`staffId`);--> statement-breakpoint
+CREATE UNIQUE INDEX `movie_unique_title_date` ON `movie` (`title`,`releaseDate`);--> statement-breakpoint
+CREATE UNIQUE INDEX `staff_name_unique` ON `staff` (`name`);
