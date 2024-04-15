@@ -18,7 +18,7 @@ export type FullMovie = {
   companies: NewCompany[];
 };
 
-const scrape = async (url: string) => {
+export const scrape = async (url: string) => {
   const response = await fetch(url);
   const body = await response.text();
 
@@ -34,13 +34,17 @@ export const parseAfi = async (url: string): Promise<FullMovie> => {
     .next()
     .text()
     .trim();
-  const releaseDate = new Date(releaseDateText).toISOString();
+
+  const releaseDate = new Date(
+    releaseDateText !== '' ? releaseDateText : 0
+  ).toISOString();
 
   const durationText = $('#fullCredits .row div:contains("Duration(in mins):")')
     .next()
     .text()
     .trim();
-  const duration = Number(durationText.split('-')[0]);
+  const durationNum = Number(durationText.split('-')[0]);
+  const duration = !Number.isNaN(durationNum) ? durationNum : 0;
 
   const synopsis = $('#fullhistory2').text().trim().slice(0, 200);
 
