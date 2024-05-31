@@ -154,6 +154,7 @@ export const parseImdb = async (url: string): Promise<FullMovie> => {
   const duration = durationNum ? durationNum : 0;
 
   const synopsis = $('section.sc-b7c53eda-4.kYwFBt p.sc-466bb6c-3.fOUpWp span')
+    .first()
     .text()
     .trim();
 
@@ -194,6 +195,83 @@ export const parseImdb = async (url: string): Promise<FullMovie> => {
   $('a:contains("Production companies")')
     .next()
     .find('li')
+    .each(function () {
+      const company = {
+        name: $(this).text().trim(),
+      };
+      companies.push(company);
+    });
+
+  const movie: NewMovie = {
+    title,
+    poster,
+    releaseDate,
+    duration,
+    synopsis,
+  };
+  const country: NewCountry = {
+    name: countryName,
+  };
+  const genre: NewCountry = {
+    name: genreName,
+  };
+
+  return { movie, country, genre, staff, companies };
+};
+
+export const parseFilmAffinity = async (url: string): Promise<FullMovie> => {
+  const $ = await scrape(url);
+
+  const title = $('h1#main-title').text().trim();
+
+  const poster = $('#movie-main-image-container img').first().attr('src');
+
+  const releaseDateText = $('dt:contains("Year")').next().text().trim();
+
+  const releaseDate = new Date(releaseDateText).toISOString();
+
+  const durationText = $('dt:contains("Running time")').next().text().trim().replace(' min.', '');
+
+  const duration = Number(durationText);
+
+  const synopsis = $('dt:contains("Synopsis")').next().text().trim();
+
+  const countryName = $('dt:contains("Country")').next().text().trim();
+
+  const genreName = $('dt:contains("Genre")').next().find('a').first().text().trim();
+
+  const staff: FullStaff[] = [];
+  $('dt:contains("Director")').each(function () {
+    const movieStaff = {
+      credit: $(this).text().trim(),
+    };
+
+    $(this).next()
+      .find('a')
+      .each(function () {
+        const name = $(this).text().trim();
+
+        staff.push({ ...movieStaff, staff: { name } });
+      });
+  });
+  $('dt:contains("Screenwriter")').each(function () {
+    const movieStaff = {
+      credit: $(this).text().trim(),
+    };
+
+    $(this).next()
+      .find('a')
+      .each(function () {
+        const name = $(this).text().trim();
+
+        staff.push({ ...movieStaff, staff: { name } });
+      });
+  });
+
+  const companies: NewCompany[] = [];
+  $('dt:contains("Producer")')
+    .next()
+    .find('a').first()
     .each(function () {
       const company = {
         name: $(this).text().trim(),

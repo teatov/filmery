@@ -1,11 +1,10 @@
-import { asc, eq, relations } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import {
   integer,
   sqliteTable,
   text,
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
-import { db } from '$lib/server/db';
 
 export const movieTable = sqliteTable(
   'movie',
@@ -21,9 +20,8 @@ export const movieTable = sqliteTable(
   },
   movie => {
     return {
-      titleDateIndex: uniqueIndex('movie_unique_title_date').on(
-        movie.title,
-        movie.releaseDate
+      titleDateIndex: uniqueIndex('movie_unique_title').on(
+        movie.title
       ),
     };
   }

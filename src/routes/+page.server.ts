@@ -5,9 +5,10 @@ import {
   genreTable,
   movieCompanyTable,
   movieStaffTable,
+  movieTable,
   staffTable,
 } from '$lib/server/schema';
-import { asc } from 'drizzle-orm';
+import { asc, count } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -17,9 +18,16 @@ export const load: PageServerLoad = async ({ url }) => {
   const genreId = url.searchParams.get('genreId');
   const staffId = url.searchParams.get('staffId');
   const companyId = url.searchParams.get('companyId');
+  const pageString = url.searchParams.get('page');
+
+  const pageSize = 50;
+  const page = pageString ? Number(pageString) : 1;
 
   const movies = await db.query.movieTable.findMany({
     with: { genre: true, staff: { with: { staff: true } } },
+    orderBy: asc(movieTable.id),
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
     where: (movie, { eq, and, inArray, like, sql }) =>
       and(
         ...[
@@ -62,12 +70,38 @@ export const load: PageServerLoad = async ({ url }) => {
   const companies = await db.query.companyTable.findMany({
     orderBy: [asc(companyTable.name)],
   });
+
+  const moviesCount = (await db.select({ count: count() }).from(movieTable))[0]
+    .count;
+  const pagesTotal = Math.ceil(moviesCount / pageSize);
+
+  const nextPage = new URL(url.href);
+  nextPage.searchParams.set(
+    'page',
+    String(page >= pagesTotal ? pagesTotal : page + 1)
+  );
+  const prevPage = new URL(url.href);
+  prevPage.searchParams.set('page', String(page <= 0 ? 0 : page - 1));
+
   return {
+    page,
+    pageSize,
+    pagesTotal: pagesTotal,
+    nextPage: nextPage.href,
+    prevPage: prevPage.href,
     movies,
+    moviesCount,
     countries,
     genres,
     staff,
     companies,
-    query: { nameIncludes, releaseYear, countryId, genreId, staffId, companyId },
+    query: {
+      nameIncludes,
+      releaseYear,
+      countryId,
+      genreId,
+      staffId,
+      companyId,
+    },
   };
 };

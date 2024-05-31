@@ -42,7 +42,7 @@ const saveFullMovie = async (fullMovie: FullMovie) => {
       .insert(movieTable)
       .values(movieValues)
       .onConflictDoUpdate({
-        target: [movieTable.title, movieTable.releaseDate],
+        target: [movieTable.title],
         set: movieValues,
       })
       .returning()
